@@ -9,22 +9,25 @@ TurboDiffusion primarily uses [SageAttention](https://github.com/thu-ml/SageAtte
 
 Paper: [TurboDiffusion: Accelerating Video Diffusion Models by 100--200 Times](https://jt-zhang.github.io/files/TurboDiffusion_Technical_Report.pdf)
 
-**Note**: the checkpoints and paper are not finalized, and will be updated later to improve quality and accuracy
+**Note**: the checkpoints and paper are not finalized, and will be updated later to improve quality.
 
 <div align="center">
-<img src="assets/TurboDiffusion_speedup.png" width="100%"/>
+<img src="assets/TurboDiffusion_speedup.png" width="99%"/>
 </div>
 
 <div align="center">
+<img src="assets/acceleration_decomposition.png" width="93%"/>
+</div>
 
+<div align="center">
 <table>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/11.gif" width="387"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/11.gif" width="387"/></div>
 </td>
 </tr>
@@ -192,71 +195,71 @@ We evaluate video generation on **a single RTX 5090 GPU**. The E2E Time refers t
 <table>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4183s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4549s</div>
 <div><img src="assets/videos/i2v/original/A14B_720p/gif/0.gif" width="360"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>35.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>38s</b></div>
 <div><img src="assets/videos/i2v/turbodiffusion/A14B_720p/gif/0.gif" width="360"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4183s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4549s</div>
 <div><img src="assets/videos/i2v/original/A14B_720p/gif/1.gif" width="360"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>35.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>38s</b></div>
 <div><img src="assets/videos/i2v/turbodiffusion/A14B_720p/gif/1.gif" width="360"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4183s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4549s</div>
 <div><img src="assets/videos/i2v/original/A14B_720p/gif/2.gif" width="360"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>35.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>38s</b></div>
 <div><img src="assets/videos/i2v/turbodiffusion/A14B_720p/gif/2.gif" width="360"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4183s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4549s</div>
 <div><img src="assets/videos/i2v/original/A14B_720p/gif/3.gif" width="360"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>35.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>38s</b></div>
 <div><img src="assets/videos/i2v/turbodiffusion/A14B_720p/gif/3.gif" width="360"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4183s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4549s</div>
 <div><img src="assets/videos/i2v/original/A14B_720p/gif/4.gif" width="360"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>35.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>38s</b></div>
 <div><img src="assets/videos/i2v/turbodiffusion/A14B_720p/gif/4.gif" width="360"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4183s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4549s</div>
 <div><img src="assets/videos/i2v/original/A14B_720p/gif/5.gif" width="360"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>35.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>38s</b></div>
 <div><img src="assets/videos/i2v/turbodiffusion/A14B_720p/gif/5.gif" width="360"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4183s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4549s</div>
 <div><img src="assets/videos/i2v/original/A14B_720p/gif/6.gif" width="360"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>35.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>38s</b></div>
 <div><img src="assets/videos/i2v/turbodiffusion/A14B_720p/gif/6.gif" width="360"/></div>
 </td>
 </tr>
@@ -268,113 +271,113 @@ We evaluate video generation on **a single RTX 5090 GPU**. The E2E Time refers t
 <table>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/0.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/0.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/0.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/1.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/1.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/1.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/2.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/2.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/2.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/5.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/5.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/5.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/7.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/7.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/7.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/11.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/11.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/11.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/13.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/13.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/13.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 166s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 184s</div>
 <div><img src="assets/videos/original/1.3B/14.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 4.7s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 5.3s</div>
 <div><img src="assets/videos/fastvideo/video_1.3B/14.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.8s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>1.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/1.3B/14.gif" width="249"/></div>
 </td>
 </tr>
@@ -386,43 +389,43 @@ We evaluate video generation on **a single RTX 5090 GPU**. The E2E Time refers t
 <table>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4648s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4767s</div>
 <div><img src="assets/videos/original/14B_720p/0.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 63.5s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 72.6s</div>
 <div><img src="assets/videos/fastvideo/video_14B_720p/0.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>22.7s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>24s</b></div>
 <div><img src="assets/videos/turbodiffusion/14B_720p/0.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4648s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4767s</div>
 <div><img src="assets/videos/original/14B_720p/3.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 63.5s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 72.6s</div>
 <div><img src="assets/videos/fastvideo/video_14B_720p/3.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>22.7s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>24s</b></div>
 <div><img src="assets/videos/turbodiffusion/14B_720p/3.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 4648s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 4767s</div>
 <div><img src="assets/videos/original/14B_720p/6.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 63.5s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 72.6s</div>
 <div><img src="assets/videos/fastvideo/video_14B_720p/6.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>22.7s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>24s</b></div>
 <div><img src="assets/videos/turbodiffusion/14B_720p/6.gif" width="249"/></div>
 </td>
 </tr>
@@ -434,57 +437,57 @@ We evaluate video generation on **a single RTX 5090 GPU**. The E2E Time refers t
 <table>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 1635s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 1676s</div>
 <div><img src="assets/videos/original/14B_480p/0.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 23.2s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 26.3s</div>
 <div><img src="assets/videos/fastvideo/video_14B_480p/0.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/14B_480p/0.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 1635s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 1676s</div>
 <div><img src="assets/videos/original/14B_480p/1.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 23.2s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 26.3s</div>
 <div><img src="assets/videos/fastvideo/video_14B_480p/1.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/14B_480p/1.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 1635s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 1676s</div>
 <div><img src="assets/videos/original/14B_480p/4.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 23.2s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 26.3s</div>
 <div><img src="assets/videos/fastvideo/video_14B_480p/4.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/14B_480p/4.gif" width="249"/></div>
 </td>
 </tr>
 <tr>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">Original, E2E Time: 1635s</div>
+<div style="font-size: 1.1em;">Original, E2E Time: 1676s</div>
 <div><img src="assets/videos/original/14B_480p/5.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">FastVideo, E2E Time: 23.2s</div>
+<div style="font-size: 1.1em;">FastVideo, E2E Time: 26.3s</div>
 <div><img src="assets/videos/fastvideo/video_14B_480p/5.gif" width="249"/></div>
 </td>
 <td align="center" style="border: 2px solid #000; padding: 10px;">
-<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.4s</b></div>
+<div style="font-size: 1.1em;">TurboDiffusion, E2E Time: <b>9.9s</b></div>
 <div><img src="assets/videos/turbodiffusion/14B_480p/5.gif" width="249"/></div>
 </td>
 </tr>
