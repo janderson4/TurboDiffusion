@@ -15,8 +15,8 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from .utils import (RUNTIME_PARAMS, parse_args, validate_args, format_config,
-                    set_runtime_param)
+from .arg_utils import parse_args, validate_args
+from .utils import RUNTIME_PARAMS, format_config, set_runtime_param
 from .pipeline import load_models, generate_t2v, generate_i2v
 
 console = Console()
