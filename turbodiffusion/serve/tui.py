@@ -1,7 +1,5 @@
 """
-TurboDiffusion TUI Server Mode
-
-A fancy, user-friendly text-based interface for video generation.
+TurboDiffusion TUI Server with a text-based interface for video generation.
 Supports both T2V (text-to-video) and I2V (image-to-video) modes.
 """
 
@@ -17,7 +15,8 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from .utils import RUNTIME_PARAMS, validate_args, format_config, set_runtime_param
+from .utils import (RUNTIME_PARAMS, parse_args, validate_args, format_config,
+                    set_runtime_param)
 from .pipeline import load_models, generate_t2v, generate_i2v
 
 console = Console()
@@ -36,73 +35,6 @@ PROMPT_STYLE = Style.from_dict({
     "prompt": "#00aa00 bold",
     "command": "#ffaa00",
 })
-
-
-def parse_arguments() -> argparse.Namespace:
-    """Parse command line arguments for TUI server mode."""
-    parser = argparse.ArgumentParser(
-        description="TurboDiffusion TUI Server - Interactive video generation"
-    )
-
-    parser.add_argument("--mode", choices=["t2v", "i2v"], default="t2v",
-                        help="Generation mode: t2v (text-to-video) or i2v (image-to-video)")
-
-    # T2V model path
-    parser.add_argument("--dit_path", type=str, default=None,
-                        help="Path to DiT checkpoint (required for t2v mode)")
-
-    # I2V model paths
-    parser.add_argument("--high_noise_model_path", type=str, default=None,
-                        help="Path to high-noise model (required for i2v mode)")
-    parser.add_argument("--low_noise_model_path", type=str, default=None,
-                        help="Path to low-noise model (required for i2v mode)")
-    parser.add_argument("--boundary", type=float, default=0.9,
-                        help="Timestep boundary for model switching (i2v only)")
-
-    # Model configuration
-    parser.add_argument("--model", choices=["Wan2.1-1.3B", "Wan2.1-14B", "Wan2.2-A14B"],
-                        default=None, help="Model architecture (auto-detected from mode if not set)")
-    parser.add_argument("--vae_path", type=str, default="checkpoints/Wan2.1_VAE.pth",
-                        help="Path to the Wan2.1 VAE")
-    parser.add_argument("--text_encoder_path", type=str,
-                        default="checkpoints/models_t5_umt5-xxl-enc-bf16.pth",
-                        help="Path to the umT5 text encoder")
-
-    # Resolution
-    parser.add_argument("--resolution", default=None, type=str,
-                        help="Resolution (default: 480p for t2v, 720p for i2v)")
-    parser.add_argument("--aspect_ratio", default="16:9", type=str,
-                        help="Aspect ratio (width:height)")
-    parser.add_argument("--adaptive_resolution", action="store_true",
-                        help="Adapt resolution to input image aspect ratio (i2v only)")
-
-    # Attention/quantization
-    parser.add_argument("--attention_type", choices=["sla", "sagesla", "original"],
-                        default="sagesla", help="Attention mechanism type")
-    parser.add_argument("--sla_topk", type=float, default=0.1,
-                        help="Top-k ratio for SLA/SageSLA attention")
-    parser.add_argument("--quant_linear", action="store_true",
-                        help="Use quantized linear layers")
-    parser.add_argument("--default_norm", action="store_true",
-                        help="Use default LayerNorm/RMSNorm (not optimized)")
-
-    # Sampling options
-    parser.add_argument("--ode", action="store_true",
-                        help="Use ODE sampling (sharper but less robust, i2v only)")
-
-    # Runtime-adjustable parameters
-    parser.add_argument("--num_steps", type=int, choices=[1, 2, 3, 4], default=4,
-                        help="Number of inference steps (1-4)")
-    parser.add_argument("--num_samples", type=int, default=1,
-                        help="Number of samples to generate")
-    parser.add_argument("--num_frames", type=int, default=81,
-                        help="Number of frames to generate")
-    parser.add_argument("--sigma_max", type=float, default=None,
-                        help="Initial sigma (default: 80 for t2v, 200 for i2v)")
-    parser.add_argument("--seed", type=int, default=0,
-                        help="Random seed for reproducibility")
-
-    return parser.parse_args()
 
 
 def print_header(args: argparse.Namespace):
@@ -288,7 +220,7 @@ def run_tui(models: dict, args: argparse.Namespace):
 
 def main(passed_args: argparse.Namespace = None):
     """Main entry point for TUI server."""
-    args = passed_args if passed_args is not None else parse_arguments()
+    args = passed_args if passed_args is not None else parse_args()
 
     validate_args(args)
 
