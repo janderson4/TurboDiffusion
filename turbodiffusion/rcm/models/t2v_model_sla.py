@@ -47,6 +47,7 @@ from rcm.conditioner import DataType, TextCondition
 from rcm.utils.optim_instantiate_dtensor import get_base_scheduler
 from rcm.utils.lognormal import LogNormal
 from rcm.utils.checkpointer import non_strict_load_model
+from rcm.utils.context_parallel import broadcast
 from rcm.utils.dtensor_helper import DTensorFastEmaModelUpdater, broadcast_dtensor_model_states
 from rcm.utils.fsdp_helper import hsdp_device_mesh
 from rcm.utils.misc import count_params
@@ -319,6 +320,7 @@ class T2VModel_SLA(ImaginaireModel):
 
         time_B_T = self.draw_training_time(x0_B_C_T_H_W.size(), condition)
         epsilon_B_C_T_H_W = torch.randn(x0_B_C_T_H_W.size(), device="cuda")
+        x0_B_C_T_H_W, time_B_T, epsilon_B_C_T_H_W, condition = self.sync(x0_B_C_T_H_W, time_B_T, epsilon_B_C_T_H_W, condition)
 
         time_B_1_T_1_1 = rearrange(time_B_T, "b t -> b 1 t 1 1")
         xt_B_C_T_H_W = (1 - time_B_1_T_1_1) * x0_B_C_T_H_W + time_B_1_T_1_1 * epsilon_B_C_T_H_W
@@ -420,6 +422,7 @@ class T2VModel_SLA(ImaginaireModel):
                 device=self.tensor_kwargs["device"],
                 generator=generator,
             )
+        init_noise, condition, uncondition = self.sync(init_noise, condition, uncondition)
 
         x = init_noise.to(torch.float64)
 
@@ -461,6 +464,15 @@ class T2VModel_SLA(ImaginaireModel):
         if parallel_state.is_initialized():
             return parallel_state.get_context_parallel_group()
         return None
+
+    def sync(self, *args):
+        cp_group = self.get_context_parallel_group()
+        cp_size = 1 if cp_group is None else cp_group.size()
+        if cp_size > 1:
+            out = tuple(broadcast(arg, cp_group) if isinstance(arg, torch.Tensor) else arg.broadcast(cp_group) for arg in args)
+        else:
+            out = args
+        return out[0] if len(out) == 1 else out
 
     # ------------------ Data Preprocessing ------------------
 

@@ -48,6 +48,7 @@ from rcm.conditioner import DataType, TextCondition, concat_condition
 from rcm.utils.optim_instantiate_dtensor import get_base_scheduler
 from rcm.utils.lognormal import LogNormal
 from rcm.utils.checkpointer import non_strict_load_model
+from rcm.utils.context_parallel import broadcast
 from rcm.utils.dtensor_helper import DTensorFastEmaModelUpdater, broadcast_dtensor_model_states
 from rcm.utils.fsdp_helper import hsdp_device_mesh
 from rcm.utils.jvp_helper import TensorWithT
@@ -545,6 +546,9 @@ class T2VDistillModel_rCM(ImaginaireModel):
         log.debug(f"Student update {iteration}")
         time_B_T = self.draw_training_time_G(x0_B_C_T_H_W.size(), condition)
         epsilon_B_C_T_H_W = torch.randn(x0_B_C_T_H_W.size(), device="cuda")
+        x0_B_C_T_H_W, time_B_T, epsilon_B_C_T_H_W, condition, uncondition = self.sync(
+            x0_B_C_T_H_W, time_B_T, epsilon_B_C_T_H_W, condition, uncondition
+        )
 
         time_B_1_T_1_1 = rearrange(time_B_T, "b t -> b 1 t 1 1")
         cost_B_1_T_1_1, sint_B_1_T_1_1 = torch.cos(time_B_1_T_1_1), torch.sin(time_B_1_T_1_1)
@@ -582,14 +586,17 @@ class T2VDistillModel_rCM(ImaginaireModel):
             G_time_B_1_T_1_1 = rearrange(G_time_B_T, "b t -> b 1 t 1 1")
             G_cost_B_1_T_1_1, G_sint_B_1_T_1_1 = torch.cos(G_time_B_1_T_1_1), torch.sin(G_time_B_1_T_1_1)
             G_xt_B_C_T_H_W = x0_B_C_T_H_W * G_cost_B_1_T_1_1 + torch.randn_like(epsilon_B_C_T_H_W) * G_sint_B_1_T_1_1
+            G_xt_B_C_T_H_W = self.sync(G_xt_B_C_T_H_W)
             num_simulation_steps_fake = self.get_effective_iteration(iteration) % self.max_simulation_steps_fake
             for _ in range(num_simulation_steps_fake):
                 with torch.no_grad():
                     G_x0_B_C_T_H_W = self.denoise(G_xt_B_C_T_H_W, G_time_B_T, condition, net_type="student").x0
                 G_time_B_T = torch.minimum(self.draw_training_time_D(x0_B_C_T_H_W.size(), condition), G_time_B_T)
+                G_time_B_T = self.sync(G_time_B_T)
                 G_time_B_1_T_1_1 = rearrange(G_time_B_T, "b t -> b 1 t 1 1")
                 G_cost_B_1_T_1_1, G_sint_B_1_T_1_1 = torch.cos(G_time_B_1_T_1_1), torch.sin(G_time_B_1_T_1_1)
                 G_xt_B_C_T_H_W = G_x0_B_C_T_H_W * G_cost_B_1_T_1_1 + torch.randn_like(epsilon_B_C_T_H_W) * G_sint_B_1_T_1_1
+                G_xt_B_C_T_H_W = self.sync(G_xt_B_C_T_H_W)
             all_xt_B_C_T_H_W = torch.cat([xt_B_C_T_H_W, G_xt_B_C_T_H_W], dim=0)
             all_time_B_T = torch.cat([time_B_T, G_time_B_T], dim=0)
             all_condition = concat_condition(condition, condition)
@@ -644,8 +651,10 @@ class T2VDistillModel_rCM(ImaginaireModel):
 
         if self.net_fake_score and iteration > self.tangent_warmup:
             D_time_B_T = self.draw_training_time_D(x0_B_C_T_H_W.size(), condition)
+            D_time_B_T = self.sync(D_time_B_T)
             D_time_B_1_T_1_1 = rearrange(D_time_B_T, "b t -> b 1 t 1 1")
             D_xt_theta_B_C_T_H_W = G_x0_theta_B_C_T_H_W * torch.cos(D_time_B_1_T_1_1) + torch.randn_like(x0_B_C_T_H_W) * torch.sin(D_time_B_1_T_1_1)
+            D_xt_theta_B_C_T_H_W = self.sync(D_xt_theta_B_C_T_H_W)
 
             with torch.no_grad():
                 x0_theta_fake_B_C_T_H_W = self.denoise(D_xt_theta_B_C_T_H_W, D_time_B_T, condition, net_type="fake_score").x0
@@ -674,9 +683,11 @@ class T2VDistillModel_rCM(ImaginaireModel):
         self, x0_B_C_T_H_W: torch.Tensor, condition: TextCondition, uncondition: TextCondition, iteration: int
     ) -> tuple[dict[str, torch.Tensor], torch.Tensor]:
         log.debug(f"Critic update {iteration}")
-        # Sample pertubation noise levels and N(0, 1) noises
         time_B_T = self.draw_training_time_G(x0_B_C_T_H_W.size(), condition)
         epsilon_B_C_T_H_W = torch.randn(x0_B_C_T_H_W.size(), device="cuda")
+        x0_B_C_T_H_W, time_B_T, epsilon_B_C_T_H_W, condition, uncondition = self.sync(
+            x0_B_C_T_H_W, time_B_T, epsilon_B_C_T_H_W, condition, uncondition
+        )
 
         G_time_B_T = math.pi / 2 * torch.ones_like(time_B_T)
         G_time_B_1_T_1_1 = rearrange(G_time_B_T, "b t -> b 1 t 1 1")
@@ -688,15 +699,18 @@ class T2VDistillModel_rCM(ImaginaireModel):
             with torch.no_grad():
                 G_x0_B_C_T_H_W = self.denoise(G_xt_B_C_T_H_W, G_time_B_T, condition, net_type="student").x0
             G_time_B_T = torch.minimum(self.draw_training_time_D(x0_B_C_T_H_W.size(), condition), G_time_B_T)
+            G_time_B_T = self.sync(G_time_B_T)
             G_time_B_1_T_1_1 = rearrange(G_time_B_T, "b t -> b 1 t 1 1")
             G_cost_B_1_T_1_1, G_sint_B_1_T_1_1 = torch.cos(G_time_B_1_T_1_1), torch.sin(G_time_B_1_T_1_1)
             G_xt_B_C_T_H_W = G_x0_B_C_T_H_W * G_cost_B_1_T_1_1 + torch.randn_like(epsilon_B_C_T_H_W) * G_sint_B_1_T_1_1
+            G_xt_B_C_T_H_W = self.sync(G_xt_B_C_T_H_W)
 
         with torch.no_grad():
             G_x0_theta_B_C_T_H_W = self.denoise(G_xt_B_C_T_H_W, G_time_B_T, condition, net_type="student").x0
 
         D_time_B_T = self.draw_training_time_D(x0_B_C_T_H_W.size(), condition)
         D_epsilon_B_C_T_H_W = torch.randn_like(x0_B_C_T_H_W)
+        D_time_B_T, D_epsilon_B_C_T_H_W = self.sync(D_time_B_T, D_epsilon_B_C_T_H_W)
         D_time_B_1_T_1_1 = rearrange(D_time_B_T, "b t -> b 1 t 1 1")
         D_cost_B_1_T_1_1, D_sint_B_1_T_1_1 = torch.cos(D_time_B_1_T_1_1), torch.sin(D_time_B_1_T_1_1)
         D_xt_theta_B_C_T_H_W = G_x0_theta_B_C_T_H_W * D_cost_B_1_T_1_1 + D_epsilon_B_C_T_H_W * D_sint_B_1_T_1_1
@@ -753,21 +767,6 @@ class T2VDistillModel_rCM(ImaginaireModel):
 
     # ------------------------ Sampling ------------------------
 
-    def get_x0_fn_from_batch(self, data_batch: Dict) -> Callable:
-
-        _, _, condition, uncondition = self.get_data_and_condition(data_batch)
-
-        # For inference, check if parallel_state is initialized
-        if not parallel_state.is_initialized():
-            assert not self.net.is_context_parallel_enabled, "parallel_state is not initialized, context parallel should be turned off."
-
-        @torch.no_grad()
-        def x0_fn(noise_x: torch.Tensor, time: torch.Tensor) -> torch.Tensor:
-            raw_x0 = self.denoise(noise_x, time, condition, net_type="student").x0
-            return raw_x0
-
-        return x0_fn
-
     @torch.no_grad()
     def generate_samples_from_batch(
         self,
@@ -792,7 +791,7 @@ class T2VDistillModel_rCM(ImaginaireModel):
                 _W // self.tokenizer.spatial_compression_factor,
             ]
 
-        x0_fn = self.get_x0_fn_from_batch(data_batch)
+        _, _, condition, uncondition = self.get_data_and_condition(data_batch)
 
         generator = torch.Generator(device=self.tensor_kwargs["device"])
         generator.manual_seed(seed)
@@ -805,6 +804,7 @@ class T2VDistillModel_rCM(ImaginaireModel):
                 device=self.tensor_kwargs["device"],
                 generator=generator,
             )
+        init_noise, condition = self.sync(init_noise, condition)
 
         if mid_t is None:
             mid_t = [1.3, 1.0, 0.6][: num_steps - 1]
@@ -822,15 +822,15 @@ class T2VDistillModel_rCM(ImaginaireModel):
         x = init_noise.to(torch.float64)
         ones = torch.ones(x.size(0), device=x.device, dtype=x.dtype)
         for i, (t_cur, t_next) in enumerate(zip(t_steps[:-1], t_steps[1:])):
-            x = x0_fn(x.float(), t_cur.float() * ones).to(torch.float64)
-            noise = torch.randn(
+            x = self.denoise(x.float(), t_cur.float() * ones, condition, net_type="student").x0.to(torch.float64)
+            x = torch.cos(t_next) * x + torch.sin(t_next) * torch.randn(
                 n_sample,
                 *state_shape,
                 dtype=torch.float32,
                 device=self.tensor_kwargs["device"],
                 generator=generator,
             )
-            x = torch.cos(t_next) * x + torch.sin(t_next) * noise
+            x = self.sync(x)
         samples = x.float()
         return torch.nan_to_num(samples)
 
@@ -883,6 +883,7 @@ class T2VDistillModel_rCM(ImaginaireModel):
                 device=self.tensor_kwargs["device"],
                 generator=generator,
             )
+        init_noise, condition, uncondition = self.sync(init_noise, condition, uncondition)
 
         x = init_noise.to(torch.float64)
 
@@ -927,6 +928,15 @@ class T2VDistillModel_rCM(ImaginaireModel):
         if parallel_state.is_initialized():
             return parallel_state.get_context_parallel_group()
         return None
+
+    def sync(self, *args):
+        cp_group = self.get_context_parallel_group()
+        cp_size = 1 if cp_group is None else cp_group.size()
+        if cp_size > 1:
+            out = tuple(broadcast(arg, cp_group) if isinstance(arg, torch.Tensor) else arg.broadcast(cp_group) for arg in args)
+        else:
+            out = args
+        return out[0] if len(out) == 1 else out
 
     # ------------------ Data Preprocessing ------------------
 
